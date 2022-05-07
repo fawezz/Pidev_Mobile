@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="codenameone.android" type="repository">
+    <properties maven-id="com.codenameone:codenameone-android:7.0.20" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/codenameone/codenameone-android/7.0.20/codenameone-android-7.0.20.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/com/codenameone/codenameone-core/7.0.20/codenameone-core-7.0.20.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
