@@ -9,6 +9,7 @@ import com.codename1.ui.util.Resources;
 import com.codename1.io.Log;
 import com.codename1.ui.Toolbar;
 import com.pidev.gui.AllCertifsForm;
+import com.pidev.gui.CreateTestForm;
 import com.pidev.gui.SignUpForm;
 
 
@@ -52,7 +53,8 @@ public class MyApplication {
             return;
         }
         
-        new SignUpForm(theme).show();            
+        new AllCertifsForm(theme).show();     
+        //new CreateTestForm(theme).show();
     }
 
     public void stop() {
