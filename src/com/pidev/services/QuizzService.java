@@ -10,6 +10,7 @@ import com.codename1.ui.events.ActionListener;
 import com.pidev.entities.ChoixEntity;
 import com.pidev.entities.QuestionEntity;
 import com.pidev.entities.TestEntity;
+import com.pidev.entities.UserSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +36,12 @@ public class QuizzService {
     public static QuizzService instance = null;
     public boolean resultOK;
     //private URLConnection con ;
-    private ConnectionRequest req ;
+    private ConnectionRequest reqG ;
+    private ConnectionRequest reqP ;
 
     private QuizzService() {
-        req = new ConnectionRequest();
+        reqG = new ConnectionRequest();
+        reqP = new ConnectionRequest();
     }
 
     public static QuizzService getInstance() {
@@ -52,63 +55,114 @@ public class QuizzService {
         //String url = Statics.BASE_URL+"/tasks/";
         String url = Statics.BASE_URL+"alltest";
 
-        req.setUrl(url);
-        req.setPost(false);
+        reqG.setUrl(url);
+        reqG.setPost(false);
         //req.addArgument("Sender", "mobile");
-        req.addResponseListener(new ActionListener<NetworkEvent>() {
+        reqG.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
             public void actionPerformed(NetworkEvent evt) {
-                 tests = parseTests( new String(req.getResponseData()));
+                 tests = parseTests(new String(reqG.getResponseData()));
 
-                req.removeResponseListener(this);
+                reqG.removeResponseListener(this);
             }
         });
 
 
-        NetworkManager.getInstance().addToQueueAndWait(req);
+        NetworkManager.getInstance().addToQueueAndWait(reqG);
         return tests;
     }
     public  ArrayList<TestEntity> getAllCertifs(){
         //String url = Statics.BASE_URL+"/tasks/";
         String url = Statics.BASE_URL+"certifs";
 
-        req.setUrl(url);
-        req.setPost(false);
+        reqG.setUrl(url);
+        reqG.setPost(false);
         //req.addArgument("Sender", "mobile");
-        req.addResponseListener(new ActionListener<NetworkEvent>() {
+        reqG.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
             public void actionPerformed(NetworkEvent evt) {
-                 tests = parseTests( new String(req.getResponseData()));
+                 tests = parseTests(new String(reqG.getResponseData()));
 
-                req.removeResponseListener(this);
+                reqG.removeResponseListener(this);
             }
         });
 
 
-        NetworkManager.getInstance().addToQueueAndWait(req);
+        NetworkManager.getInstance().addToQueueAndWait(reqG);
         return tests;
     }
 
+    public  ArrayList<TestEntity> getAllQuizz(){
+        //String url = Statics.BASE_URL+"/tasks/";
+        String url = Statics.BASE_URL+"quizz/"+UserSession.userID;
+        reqG.setPost(false);
+        reqG.setUrl(url);
+        
+        //req.addArgument("Sender", "mobile");
+        reqG.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                 tests = parseTests(new String(reqG.getResponseData()));
+
+                reqG.removeResponseListener(this);
+            }
+        });
+
+
+        NetworkManager.getInstance().addToQueueAndWait(reqG);
+        return tests;
+    }
+    
     TestEntity quizz = new TestEntity();
 
     public TestEntity createTest (TestEntity t){
         String url = Statics.BASE_URL+"newtest";
-        req.setUrl(url);
-        req.setPost(true);
-        req.addArgument("userId", "7");          //TOCHANGE
-        req.addArgument("duree", String.valueOf(t.getDuree()));
-        req.addArgument("nbrTent", String.valueOf(t.getNbrTentative()));
-        req.addArgument("titre",t.getTitre());
-        req.addResponseListener(new ActionListener<NetworkEvent>() {
+        reqP.setPost(true);
+        reqP.setUrl(url);
+        reqP.addArgument("userId", "7");          //TOCHANGE
+        reqP.addArgument("duree", String.valueOf(t.getDuree()));
+        reqP.addArgument("nbrTent", String.valueOf(t.getNbrTentative()));
+        reqP.addArgument("titre",t.getTitre());
+        reqP.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
             public void actionPerformed(NetworkEvent evt) {
-                quizz = parseTest( new String(req.getResponseData()));
-                req.removeResponseListener(this);    
+                quizz = parseTest(new String(reqG.getResponseData()));
+                reqG.removeResponseListener(this);    
             }
             
         });
 
-        NetworkManager.getInstance().addToQueueAndWait(req);
+        NetworkManager.getInstance().addToQueueAndWait(reqG);
+        return quizz;
+    }
+    public TestEntity modifierTest (TestEntity t){
+                        System.out.println("inside modifier test1");
+
+        String url = Statics.BASE_URL+"edittest/" + t.getIdTest();
+        
+        reqP.setUrl(url);
+        reqP.setPost(true);
+        reqP.addArgument("id", String.valueOf(t.getIdTest()));
+        reqP.addArgument("userId", String.valueOf(t.getUserId()));          
+        reqP.addArgument("duree", String.valueOf(t.getDuree()));
+        reqP.addArgument("nbrTent", String.valueOf(t.getNbrTentative()));
+        reqP.addArgument("titre",t.getTitre());
+        reqP.addArgument("type",t.getType());
+                                System.out.println("inside modifier test22");
+
+        reqP.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                quizz = parseTest(new String(reqP.getResponseData()));
+                                        System.out.println("inside modifier test33");
+
+                System.out.println(quizz.toString());
+                reqP.removeResponseListener(this);    
+            }
+            
+        });
+
+        NetworkManager.getInstance().addToQueueAndWait(reqG);
         return quizz;
     }
     
@@ -134,8 +188,7 @@ public class QuizzService {
                 t.setDuree((int) Double.parseDouble(obj.get("duree").toString()));
                 t.setNbrTentative((int) Double.parseDouble(obj.get("nbrtentative").toString()));
                 //t.setUserId((int) Double.parseDouble(obj.get("userId").toString()));
-
-                
+        
                 List<Map<String,Object>> listQuestions = (List<Map<String,Object>>)obj.get("questions");
                     //System.out.println("aaaaaaaaaaaa" +listQuestions.toString());
 
@@ -168,7 +221,7 @@ public class QuizzService {
         } catch (IOException ex) {
 
         }
-        //System.out.println(testsList.toString());
+            //System.out.println(testsList.toString());
         return testsList;
     }
     public TestEntity parseTest(String jsonText){
@@ -176,10 +229,12 @@ public class QuizzService {
         try {
 
             JSONParser j = new JSONParser();
-            Map<String,Object> testsListJson =j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
-
-            Map<String,Object> obj = (Map<String,Object>)testsListJson.get("root");
-
+            Map<String,Object> testJson =j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
+            System.out.println(testJson.toString());
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaa");
+            System.out.println(testJson.get("root"));
+            List<Map<String,Object>> objList = (List<Map<String,Object>>)testJson.get("root");
+            Map<String,Object> obj = objList.get(0);
 
                 t.setIdTest((int) Double.parseDouble(obj.get("id").toString()));
                 t.setTitre(obj.get("titre").toString());

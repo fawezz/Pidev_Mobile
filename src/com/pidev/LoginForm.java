@@ -24,6 +24,7 @@ import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.util.Resources;
+import com.pidev.entities.UserSession;
 import com.pidev.gui.SignUpForm;
 
 import java.io.*;
@@ -61,6 +62,8 @@ public class LoginForm extends Form {
         FontImage.setMaterialIcon(loginIcon, FontImage.MATERIAL_PERSON_OUTLINE, 3);
         FontImage.setMaterialIcon(passwordIcon, FontImage.MATERIAL_LOCK_OUTLINE, 3);
 
+        
+        //UserSession users= new UserSession(u.getId(), u.getUserName(), u.getRole());
         //HTTP REQUEST
 //        URL url=new URL("http://localhost:8000/check_login");
 //        HttpURLConnection cnx= (HttpURLConnection) url.openConnection();

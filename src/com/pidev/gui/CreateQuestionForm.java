@@ -7,6 +7,7 @@ package com.pidev.gui;
 
 import com.codename1.ui.Button;
 import com.codename1.ui.Container;
+import com.codename1.ui.Dialog;
 import com.codename1.ui.Form;
 import com.codename1.ui.Label;
 import com.codename1.ui.TextField;
@@ -30,13 +31,15 @@ public class CreateQuestionForm extends Form {
         QuestionService qs = QuestionService.getInstance();
         
         Container container= new Container(BoxLayout.y());
+        Label l = new Label();
         Label lblHeader = new Label("Créer une nouvelle question");
-        TextField txtEnonce = new TextField("","Enonce");
-        TextField txtChoix1 = new TextField("","Choix 1");
-        TextField txtChoix2 = new TextField("","Choix 2");
-        TextField txtChoix3 = new TextField("","Choix 3");
-        Container contInput= (FlowLayout.encloseIn(txtEnonce,
+        TextField txtEnonce = new TextField("","Enoncé...");
+        TextField txtChoix1 = new TextField("","Choix 1...");
+        TextField txtChoix2 = new TextField("","Choix 2...");
+        TextField txtChoix3 = new TextField("","Choix 3...");
+        Container contInput= (FlowLayout.encloseIn(
                 lblHeader,
+                txtEnonce,
                 txtChoix1,
                 txtChoix2,
                 txtChoix3
@@ -44,11 +47,16 @@ public class CreateQuestionForm extends Form {
         Button btnCreer=new Button("Créer");
         contInput.add(btnCreer);
         btnCreer.addActionListener(evt -> {
-            QuestionEntity q = new QuestionEntity();
-            q.setEnonce(txtEnonce.getText());
-            q.setTest(createdTest);
-            
-            qs.createQuestion(q, txtChoix1.getText(), txtChoix2.getText(), txtChoix3.getText());
+            if(!"".equals(txtEnonce.getText()) && !"".equals(txtChoix1.getText()) && !"".equals(txtChoix2.getText()) 
+                    && !"".equals(txtChoix3.getText())){
+                QuestionEntity q = new QuestionEntity();
+                q.setEnonce(txtEnonce.getText());
+                q.setTest(createdTest);
+
+                qs.createQuestion(q, txtChoix1.getText(), txtChoix2.getText(), txtChoix3.getText());
+            }else{
+                Dialog.show("Champs Obligatoires", "Tous les champs sont obligatoires", "OK", null);
+            }
         });
         add(contInput);
     }

@@ -6,18 +6,14 @@
 package com.pidev.gui;
 
 import com.codename1.ui.Button;
-import com.codename1.ui.ButtonGroup;
-import static com.codename1.ui.CN.CENTER;
-import static com.codename1.ui.CN.LEFT;
-import static com.codename1.ui.CN.RIGHT;
 import com.codename1.ui.Component;
+import static com.codename1.ui.Component.CENTER;
+import static com.codename1.ui.Component.LEFT;
+import static com.codename1.ui.Component.RIGHT;
 import com.codename1.ui.Container;
 import com.codename1.ui.Display;
 import com.codename1.ui.FontImage;
-import com.codename1.ui.Form;
 import com.codename1.ui.Label;
-import com.codename1.ui.TextArea;
-import com.codename1.ui.TextField;
 import com.codename1.ui.geom.Dimension;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.BoxLayout;
@@ -25,27 +21,29 @@ import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.util.Resources;
 import com.pidev.SideMenuBaseForm;
 import com.pidev.entities.TestEntity;
-import com.pidev.entities.User;
 import com.pidev.services.QuizzService;
 import java.util.ArrayList;
+
 /**
  *
  * @author zewaf
  */
-public class AllCertifsForm extends SideMenuBaseForm {
-    public AllCertifsForm(Resources res){
+public class MesQuizzForm extends SideMenuBaseForm {
+    public MesQuizzForm(Resources res){
         
         super (new BorderLayout());
         
         Container item = new Container(BoxLayout.y());
         item.setScrollableY(true);
 
-        ArrayList<TestEntity> tests = QuizzService.getInstance().getAllCertifs();
+        ArrayList<TestEntity> tests = QuizzService.getInstance().getAllQuizz();
         Dimension d = new Dimension(Display.getInstance().getDisplayHeight(), Display.getInstance().getDisplayWidth());
         item.setSize(d);
-        Label lblHeader = new Label("Les certifications Disponibles");
+        Label lblHeader = new Label("Mes Quizz");
         //lblHeader.;
         item.add(lblHeader);
+        
+        
         try {
             for (TestEntity t : tests) {
                // System.out.println(p);
@@ -62,6 +60,13 @@ public class AllCertifsForm extends SideMenuBaseForm {
 
 
         this.add(CENTER, item);
+        
+        Button btnCreer = new Button("Créer");
+        btnCreer.addActionListener((e)->{
+            System.out.println("btnCreer PRESSED");
+            new CreateTestForm(res).show();
+        });
+        item.add(btnCreer);
 
 
     }
@@ -88,7 +93,8 @@ public class AllCertifsForm extends SideMenuBaseForm {
         Label lblTentative = new Label( String.valueOf(t.getNbrTentative()), "NewsBottomLine");
         //FontImage.setMaterialIcon(lblTentative, FontImage.MATERIAL_CHAT);
 
-        Button btnPasser = new Button("Passer");
+        Button btnModifier = new Button("Modifier");
+        
 
         Container L1 = new Container(new BorderLayout());
         Container centerPart = new Container(new BorderLayout());
@@ -97,7 +103,7 @@ public class AllCertifsForm extends SideMenuBaseForm {
         centerPart.add(LEFT, lblTitre);
         
         L1.add(CENTER, centerPart);
-        L1.add(RIGHT, btnPasser);
+        L1.add(RIGHT, btnModifier);
 
         cnt.add(BorderLayout.CENTER, BoxLayout.encloseY(
                 L1
@@ -111,9 +117,9 @@ public class AllCertifsForm extends SideMenuBaseForm {
 //        line.setSize(new Dimension(Display.getInstance().convertToPixels(1f),Display.getInstance().convertToPixels(100f)));
         
 
-        btnPasser.addActionListener((e)->{
-            System.out.println(t.getTitre());
-             new PasserTestForm(res,t).show();
+        btnModifier.addActionListener((e)->{
+            System.out.println("btnModifier pressed");
+             new ModifierTestForm(res,t).show();
         });
 
         return cnt;
@@ -128,23 +134,3 @@ public class AllCertifsForm extends SideMenuBaseForm {
     
     
 }
-
-
-
-/*
-        super(BoxLayout.y());
-        QuizzService qService= QuizzService.getInstance();
-        ArrayList<TestEntity> tests = qService.getAllTests();
-        
-        Container container= new Container(BoxLayout.y());
-        Container contUsername= (FlowLayout.encloseIn(
-                new TextField("","Quizz"),
-                new TextField("","Question")
-
-        ));
-        Button passer =new Button("Passer");
-        contUsername.add(passer);
-        passer.addActionListener(evt -> {
-
-        });
-        add(contUsername);*/

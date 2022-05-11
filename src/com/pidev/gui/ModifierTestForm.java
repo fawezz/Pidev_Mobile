@@ -9,49 +9,55 @@ import com.codename1.ui.Button;
 import com.codename1.ui.Container;
 import com.codename1.ui.Dialog;
 import com.codename1.ui.Form;
-import com.codename1.ui.TextArea;
+import com.codename1.ui.Label;
 import com.codename1.ui.TextField;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.util.Resources;
 import com.pidev.entities.TestEntity;
-import com.pidev.entities.User;
 import com.pidev.services.QuizzService;
 
 /**
  *
  * @author zewaf
  */
-public class CreateTestForm extends Form {
+public class ModifierTestForm extends Form {
     
-    public CreateTestForm(Resources res){
+    public ModifierTestForm(Resources res, TestEntity t){
 
         super(BoxLayout.y());
         QuizzService qs = QuizzService.getInstance();
         
+        
         Container container= new Container(BoxLayout.y());
         
-        TextField txtTitre = new TextField("","Titre");
-        TextField txtTentative = new TextField("","nombre Tentative");
-        TextField txtDuree = new TextField("","Durée");
+        TextField txtTitre = new TextField(t.getTitre(),"Titre");
+        Label lTitre = new Label("Titre");
+        TextField txtTentative = new TextField(t.getNbrTentative()+"","nombre Tentative");
+        Label lTentative = new Label("Nombre de tentatives");
+        TextField txtDuree = new TextField(t.getDuree()+"","Durée");
+        Label lDuree = new Label("Duree");
         Container contInput= (FlowLayout.encloseIn(
+                lTitre,
                 txtTitre,
+                lTentative,
                 txtTentative,
+                lDuree,
                 txtDuree
         ));
-        Button btnCreer=new Button("Créer");
-        contInput.add(btnCreer);
+        Button btnModifier=new Button("Modifier");
+        contInput.add(btnModifier);
         
-        btnCreer.addActionListener(evt -> {
+        btnModifier.addActionListener(evt -> {
             if(!"".equals(txtTitre.getText()) && !"".equals(txtDuree.getText()) && !"".equals(txtTentative.getText())){
                 
-                TestEntity t = new TestEntity();
-                t.setTitre(txtTitre.getText());
+                TestEntity quizz = t;
+                quizz.setTitre(txtTitre.getText());
                 try{
-                    t.setDuree(Integer.valueOf(txtDuree.getText()));
-                    t.setNbrTentative(Integer.valueOf(txtTentative.getText()));
-                    //t = qs.createTest(t);             
-                    new CreateQuestionForm(res, t).show();
+                    quizz.setDuree(Integer.valueOf(txtDuree.getText()));
+                    quizz.setNbrTentative(Integer.valueOf(txtTentative.getText()));
+                    quizz = qs.modifierTest(quizz);             
+                    new MesQuizzForm(res).show();
                 }catch(NumberFormatException e){
                     Dialog.show("ATTENTION", "La durée et le nombre de tentative doivent étre des entiers naturels", "OK", null);
                     txtDuree.setText("");

@@ -23,6 +23,8 @@ import com.codename1.ui.*;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.layouts.Layout;
 import com.codename1.ui.util.Resources;
+import com.pidev.entities.UserSession;
+import com.pidev.gui.MesQuizzForm;
 
 import java.io.IOException;
 
@@ -53,25 +55,49 @@ public abstract class SideMenuBaseForm extends Form {
         Image mask = res.getImage("round-mask.png");
         mask = mask.scaledHeight(mask.getHeight() / 4 * 3);
         profilePic = profilePic.fill(mask.getWidth(), mask.getHeight());
-        Label profilePicLabel = new Label("  Jennifer Wilson", profilePic, "SideMenuTitle");
+        Label profilePicLabel = new Label(UserSession.userName, profilePic, "SideMenuTitle");
         profilePicLabel.setMask(mask.createMask());
 
         Container sidemenuTop = BorderLayout.center(profilePicLabel);
         sidemenuTop.setUIID("SidemenuTop");
         
         getToolbar().addComponentToSideMenu(sidemenuTop);
-        getToolbar().addMaterialCommandToSideMenu("  Dashboard", FontImage.MATERIAL_DASHBOARD,  e -> showOtherForm(res));
-        getToolbar().addMaterialCommandToSideMenu("  Activity", FontImage.MATERIAL_TRENDING_UP,  e -> showOtherForm(res));
-        getToolbar().addMaterialCommandToSideMenu("  Tasks", FontImage.MATERIAL_ACCESS_TIME,  e -> showOtherForm(res));
-        getToolbar().addMaterialCommandToSideMenu("  Account Settings", FontImage.MATERIAL_SETTINGS,  e -> showOtherForm(res));
-        getToolbar().addMaterialCommandToSideMenu("  Logout", FontImage.MATERIAL_EXIT_TO_APP,  e -> {
-            try {
-                new LoginForm(res).show();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        });
+        if(UserSession.userRole.equalsIgnoreCase("Travailleur")){
+            getToolbar().addMaterialCommandToSideMenu("  Certifications", FontImage.MATERIAL_DASHBOARD,  e -> {
+                new MesQuizzForm(res).show();
+            });
+            getToolbar().addMaterialCommandToSideMenu("  Chat", FontImage.MATERIAL_TRENDING_UP,  e -> {
+                new MesQuizzForm(res).show();
+            });
+            getToolbar().addMaterialCommandToSideMenu("  Offres", FontImage.MATERIAL_ACCESS_TIME,  e -> showOtherForm(res));
+            getToolbar().addMaterialCommandToSideMenu("  Demandes", FontImage.MATERIAL_SETTINGS,  e -> showOtherForm(res));
+            getToolbar().addMaterialCommandToSideMenu("  Logout", FontImage.MATERIAL_EXIT_TO_APP,  e -> {
+                try {
+                    new LoginForm(res).show();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            });
+        }else{
+            getToolbar().addMaterialCommandToSideMenu("  Mes Certifications", FontImage.MATERIAL_DASHBOARD,  e -> {
+                //new MesQuizzForm(res).show();
+            });
+            getToolbar().addMaterialCommandToSideMenu("  Chat", FontImage.MATERIAL_TRENDING_UP,  e -> {
+                new MesQuizzForm(res).show();
+            });
+            getToolbar().addMaterialCommandToSideMenu("  Offres", FontImage.MATERIAL_ACCESS_TIME,  e -> showOtherForm(res));
+            getToolbar().addMaterialCommandToSideMenu("  Demandes", FontImage.MATERIAL_SETTINGS,  e -> showOtherForm(res));
+            getToolbar().addMaterialCommandToSideMenu("  Logout", FontImage.MATERIAL_EXIT_TO_APP,  e -> {
+                try {
+                    new LoginForm(res).show();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            });
+        }
+        
     }
     
     protected abstract void showOtherForm(Resources res);
+
 }
